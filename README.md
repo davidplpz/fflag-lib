@@ -69,3 +69,4 @@ Para usar con tus propios paths o herramientas, revisa:
 ## 📌 Requisitos
 - Node.js 18+ 
 - Redis 6+
+- ioredis 5+

@@ -1,22 +1,22 @@
-import { RedisClientType } from "redis";
-import {FeatureFlagRepository} from "domain/feature-flag-repository.entity";
-import {FeatureFlag} from "domain/feature-flag.entity";
+import { Redis } from "ioredis";
+import { FeatureFlagRepository } from "domain/feature-flag-repository.entity";
+import { FeatureFlag } from "domain/feature-flag.entity";
 
 export class RedisRepository implements FeatureFlagRepository {
-    constructor(private readonly client: RedisClientType) {}
+    constructor(private readonly client: Redis) {}
 
     private getRedisKey(key: string) {
         return `feature_flag:${key}`;
     }
 
     async get(key: string): Promise<FeatureFlag | null> {
-        const data = await this.client.hGetAll(this.getRedisKey(key));
+        const data = await this.client.hgetall(this.getRedisKey(key));
         if (!data || Object.keys(data).length === 0) return null;
         return new FeatureFlag(key, data.isActive === "true", data.description);
     }
 
     async save(flag: FeatureFlag): Promise<void> {
-        await this.client.hSet(this.getRedisKey(flag.key), {
+        await this.client.hset(this.getRedisKey(flag.key), {
             isActive: flag.isActive.toString(),
             description: flag.description ?? "",
         });
@@ -27,6 +27,6 @@ export class RedisRepository implements FeatureFlagRepository {
     }
 
     async exists(key: string): Promise<boolean> {
-        return await this.client.exists(this.getRedisKey(key)) === 1;
+        return (await this.client.exists(this.getRedisKey(key))) === 1;
     }
 }
