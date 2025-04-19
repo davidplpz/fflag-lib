@@ -17,7 +17,7 @@ describe('DeactivateFeatureFlagService', () => {
         const featureFlag = new FeatureFlag(key, true);
         await repository.save(featureFlag);
 
-        const result = await service.deactivateFeatureFlag(key);
+        const result = await service.execute(key);
 
         expect(result.isActive).toBe(false);
         const updatedFlag = await repository.get(key);
@@ -27,7 +27,7 @@ describe('DeactivateFeatureFlagService', () => {
     it('debería lanzar un error si el feature flag no existe', async () => {
         const key = 'non-existent-key';
 
-        await expect(service.deactivateFeatureFlag(key)).rejects.toThrow(
+        await expect(service.execute(key)).rejects.toThrow(
             `Feature flag with id ${key} not found`
         );
     });
