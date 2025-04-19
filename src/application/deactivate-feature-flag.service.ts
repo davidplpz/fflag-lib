@@ -5,7 +5,7 @@ export class DeactivateFeatureFlagService {
         private readonly repository: FeatureFlagRepository
     ) {}
 
-    async deactivateFeatureFlag(id: string) {
+    async execute(id: string) {
         const featureFlag = await this.repository.get(id);
         if (!featureFlag) {
             throw new Error(`Feature flag with id ${id} not found`);
