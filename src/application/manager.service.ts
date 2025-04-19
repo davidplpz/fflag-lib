@@ -1,0 +1,45 @@
+import {Redis} from "ioredis";
+import {CreateFeatureFlagService} from "application/create-feature-flag.service";
+import {DeleteFeatureFlagService} from "application/delete-feature-flag.service";
+import {GetFeatureFlagService} from "application/get-feature-flag.service";
+import {DeactivateFeatureFlagService} from "application/deactivate-feature-flag.service";
+import {RedisRepository} from "infrastructure/repositories/redis.repository";
+
+export class ManagerService {
+    private static instance: ManagerService;
+    private readonly createService: CreateFeatureFlagService;
+    private readonly deleteService: DeleteFeatureFlagService;
+    private readonly getService: GetFeatureFlagService;
+    private readonly deactivateService: DeactivateFeatureFlagService;
+
+    private constructor(redisClient: Redis) {
+        const repository = new RedisRepository(redisClient);
+        this.createService = new CreateFeatureFlagService(repository);
+        this.deleteService = new DeleteFeatureFlagService(repository);
+        this.getService = new GetFeatureFlagService(repository);
+        this.deactivateService = new DeactivateFeatureFlagService(repository);
+    }
+
+    public static getInstance(redisClient: Redis): ManagerService {
+        if (!ManagerService.instance) {
+        ManagerService.instance = new ManagerService(redisClient);
+        }
+        return ManagerService.instance;
+    }
+
+    async createFlag(key: string, isActive: boolean, description: string) {
+        return this.createService.execute(key, isActive, description);
+    }
+
+    async deleteFlag(key: string) {
+        return this.deleteService.execute(key);
+    }
+
+    async getFlag(key: string) {
+        return this.getService.execute(key);
+    }
+
+    async deactivateFlag(key: string) {
+        return this.deactivateService.execute(key);
+    }
+}
