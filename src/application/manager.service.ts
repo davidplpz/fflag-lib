@@ -4,6 +4,7 @@ import {DeleteFeatureFlagService} from "application/delete-feature-flag.service"
 import {GetFeatureFlagService} from "application/get-feature-flag.service";
 import {DeactivateFeatureFlagService} from "application/deactivate-feature-flag.service";
 import {RedisRepository} from "infrastructure/repositories/redis.repository";
+import {ActivateFeatureFlagService} from "application/activate-feature-flag.service";
 
 export class ManagerService {
     private static instance: ManagerService;
@@ -11,6 +12,7 @@ export class ManagerService {
     private readonly deleteService: DeleteFeatureFlagService;
     private readonly getService: GetFeatureFlagService;
     private readonly deactivateService: DeactivateFeatureFlagService;
+    private readonly activateService: ActivateFeatureFlagService;
 
     private constructor(redisClient: Redis) {
         const repository = new RedisRepository(redisClient);
@@ -18,6 +20,7 @@ export class ManagerService {
         this.deleteService = new DeleteFeatureFlagService(repository);
         this.getService = new GetFeatureFlagService(repository);
         this.deactivateService = new DeactivateFeatureFlagService(repository);
+        this.activateService = new ActivateFeatureFlagService(repository);
     }
 
     public static getInstance(redisClient: Redis): ManagerService {
@@ -41,5 +44,9 @@ export class ManagerService {
 
     async deactivateFlag(key: string) {
         return this.deactivateService.execute(key);
+    }
+
+    async activateFlag(key: string) {
+        return this.activateService.execute(key);
     }
 }
