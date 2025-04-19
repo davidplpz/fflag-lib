@@ -26,7 +26,7 @@ npm install feature-flags-lib
 1. Usar los casos de uso
 ```javascript
 import { Redis } from 'ioredis';
-import { RedisFeatureFlagRepository } from 'feature-flags-lib';
+import { RedisFeatureFlagRepository } from 'fflags-lib';
 
 const redis = new Redis(); // Usamos ioredis para crear la conexión
 const repo = new RedisFeatureFlagRepository(redis);
@@ -36,7 +36,7 @@ import {
   CreateFeatureFlag,
   ActivateFeatureFlag,
   GetFeatureFlag
-} from 'feature-flags-lib';
+} from 'fflags-lib';
 
 const createFlag = new CreateFeatureFlag(repo);
 await createFlag.execute({ name: 'new-dashboard', active: false });
@@ -47,6 +47,7 @@ await activateFlag.execute('new-dashboard');
 const getFlag = new GetFeatureFlag(repo);
 const flag = await getFlag.execute('new-dashboard');
 console.log(flag); // { name: 'new-dashboard', active: true }
+
 ```
 ## 🧪 Tests
 ```bash
