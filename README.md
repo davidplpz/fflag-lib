@@ -1,4 +1,4 @@
-# 🧩 feature-flags-lib
+# 🧩 fflags-lib
 
 Librería modular y extensible para gestionar **feature flags** utilizando Redis como almacenamiento. Basada en principios de **Domain-Driven Design (DDD)** y **Arquitectura Hexagonal**.
 
@@ -19,7 +19,7 @@ Librería modular y extensible para gestionar **feature flags** utilizando Redis
 ## 📦 Instalación
 
 ```bash
-npm install feature-flags-lib
+npm install fflags-lib
 ```
 
 ## 🧑‍💻 Uso básico
