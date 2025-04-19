@@ -23,20 +23,15 @@ npm install feature-flags-lib
 ```
 
 ## 🧑‍💻 Uso básico
-
-1. Crear una instancia del repositorio de Redis
+1. Usar los casos de uso
 ```javascript
+import { Redis } from 'ioredis';
 import { RedisFeatureFlagRepository } from 'feature-flags-lib';
-import { createClient } from 'redis';
 
-const redis = createClient();
-await redis.connect();
-
+const redis = new Redis(); // Usamos ioredis para crear la conexión
 const repo = new RedisFeatureFlagRepository(redis);
-```
 
-2. Usar los casos de uso
-```javascript
+// Usar los casos de uso
 import {
   CreateFeatureFlag,
   ActivateFeatureFlag,
