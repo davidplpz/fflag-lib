@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { CreateFeatureFlagService } from '../../src';
 import { InMemoryFeatureFlagRepository } from '../infrastructure/repositories/inmemory.repository';
+import { CreateFeatureFlagService } from '../../src/application/create-feature-flag.service';
 
 describe('CreateFeatureFlagService', () => {
     let repository: InMemoryFeatureFlagRepository;
@@ -11,10 +11,10 @@ describe('CreateFeatureFlagService', () => {
         service = new CreateFeatureFlagService(repository);
     });
 
-    it('debería crear un feature flag exitosamente', async () => {
+    it('should successfully create a feature flag', async () => {
         const key = 'test-key';
         const isActive = true;
-        const description = 'Descripción de prueba';
+        const description = 'Test description';
 
         const featureFlag = await service.execute(key, isActive, description);
 
@@ -29,7 +29,7 @@ describe('CreateFeatureFlagService', () => {
         expect(savedFlag?.description).toBe(description);
     });
 
-    it('debería lanzar un error si el feature flag ya existe', async () => {
+    it('should throw an error if the feature flag already exists', async () => {
         const key = 'test-key';
         const isActive = true;
 

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { ManagerService } from '../../src/application/manager.service';
+import { ManagerService } from '../../src';
 import { InMemoryFeatureFlagRepository } from '../infrastructure/repositories/inmemory.repository';
-import { FeatureFlag } from '../../src';
+import { FeatureFlag } from '../../src/domain/feature-flag.entity';
 import { Redis } from 'ioredis';
 
 describe('ManagerService', () => {
@@ -18,7 +18,7 @@ describe('ManagerService', () => {
         (managerService as any).deactivateService['repository'] = repository;
     });
 
-    it('debería crear un feature flag', async () => {
+    it('should create a feature flag', async () => {
         const key = 'test-key';
         const description = 'Test feature flag';
         const isActive = true;
@@ -34,7 +34,7 @@ describe('ManagerService', () => {
         expect(savedFlag?.isActive).toBe(isActive);
     });
 
-    it('debería obtener un feature flag existente', async () => {
+    it('should retrieve an existing feature flag', async () => {
         const key = 'test-key';
         const featureFlag = new FeatureFlag(key, true, 'Test feature flag');
         await repository.save(featureFlag);
@@ -46,7 +46,7 @@ describe('ManagerService', () => {
         expect(result.isActive).toBe(true);
     });
 
-    it('debería eliminar un feature flag existente', async () => {
+    it('should delete an existing feature flag', async () => {
         const key = 'test-key';
         const featureFlag = new FeatureFlag(key, true, 'Test feature flag');
         await repository.save(featureFlag);
@@ -57,7 +57,7 @@ describe('ManagerService', () => {
         expect(deletedFlag).toBeNull();
     });
 
-    it('debería desactivar un feature flag existente', async () => {
+    it('should deactivate an existing feature flag', async () => {
         const key = 'test-key';
         const featureFlag = new FeatureFlag(key, true, 'Test feature flag');
         await repository.save(featureFlag);
@@ -68,7 +68,7 @@ describe('ManagerService', () => {
         expect(updatedFlag?.isActive).toBe(false);
     });
 
-    it('debería lanzar un error al intentar obtener un feature flag inexistente', async () => {
+    it('should throw an error when trying to retrieve a non-existent feature flag', async () => {
         const key = 'non-existent-key';
 
         await expect(managerService.getFlag(key)).rejects.toThrow(

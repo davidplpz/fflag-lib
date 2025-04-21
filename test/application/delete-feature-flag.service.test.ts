@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DeleteFeatureFlagService } from '../../src';
 import { InMemoryFeatureFlagRepository } from '../infrastructure/repositories/inmemory.repository';
-import { FeatureFlag } from '../../src';
+import { DeleteFeatureFlagService } from '../../src/application/delete-feature-flag.service';
+import { FeatureFlag } from '../../src/domain/feature-flag.entity';
 
 describe('DeleteFeatureFlagService', () => {
     let repository: InMemoryFeatureFlagRepository;
@@ -12,7 +12,7 @@ describe('DeleteFeatureFlagService', () => {
         service = new DeleteFeatureFlagService(repository);
     });
 
-    it('debería eliminar un feature flag existente', async () => {
+    it('should delete an existing feature flag', async () => {
         const key = 'test-key';
         const featureFlag = new FeatureFlag(key, true);
         await repository.save(featureFlag);
@@ -23,7 +23,7 @@ describe('DeleteFeatureFlagService', () => {
         expect(result).toBeNull();
     });
 
-    it('debería lanzar un error si el feature flag no existe', async () => {
+    it('should throw an error if the feature flag does not exist', async () => {
         const key = 'non-existent-key';
 
         await expect(service.execute(key)).rejects.toThrow(

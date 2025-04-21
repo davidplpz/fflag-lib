@@ -29,4 +29,28 @@ export class RedisRepository implements FeatureFlagRepository {
     async exists(key: string): Promise<boolean> {
         return (await this.client.exists(this.getRedisKey(key))) === 1;
     }
+
+    async getAll(): Promise<FeatureFlag[]> {
+        const keys = await this.client.keys("feature_flag:*");
+        const featureFlags: FeatureFlag[] = [];
+
+        for (const key of keys) {
+            const data = await this.client.hgetall(key);
+            if (data && Object.keys(data).length > 0) {
+                const flagKey = key.replace("feature_flag:", "");
+                featureFlags.push(new FeatureFlag(flagKey, data.isActive === "true", data.description));
+            }
+        }
+        return featureFlags;
+    }
+
+    async getAllActive(): Promise<FeatureFlag[]> {
+        const allFlags = await this.getAll();
+        return allFlags.filter(flag => flag.isActive);
+    }
+
+    async getAllInactive(): Promise<FeatureFlag[]> {
+        const allFlags = await this.getAll();
+        return allFlags.filter(flag => !flag.isActive);
+    }
 }

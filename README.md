@@ -1,29 +1,29 @@
 # 🧩 fflags-lib
 
-Librería modular y extensible para gestionar **feature flags** utilizando Redis como almacenamiento. Basada en principios de **Domain-Driven Design (DDD)** y **Arquitectura Hexagonal**.
+Modular and extensible library for managing **feature flags** using Redis as storage. Based on **Domain-Driven Design (DDD)** principles and **Hexagonal Architecture**.
 
 ---
 
-## 🚀 Características
+## 🚀 Features
 
-- ✅ Gestión de feature flags: activar, desactivar, crear, eliminar, consultar.
-- 🧱 Arquitectura hexagonal (puertos y adaptadores).
-- 🧠 Separación clara entre dominio, aplicación e infraestructura.
-- 🔌 Almacenamiento en Redis (puede extenderse a otros).
-- 📦 Empaquetado como librería para reutilizar en múltiples proyectos.
-- 🧪 Testeado con [Vitest](https://vitest.dev/).
-- ⚙️ Escrito en TypeScript y compatible con ESM/CJS.
+- ✅ Feature flag management: activate, deactivate, create, delete, retrieve.
+- 🧱 Hexagonal architecture (ports and adapters).
+- 🧠 Clear separation between domain, application, and infrastructure.
+- 🔌 Redis storage (can be extended to others).
+- 📦 Packaged as a library for reuse in multiple projects.
+- 🧪 Tested with [Vitest](https://vitest.dev/).
+- ⚙️ Written in TypeScript and compatible with ESM/CJS.
 
 ---
 
-## 📦 Instalación
+## 📦 Installation
 
 ```bash
 npm install fflags-lib
 ```
 
-## 🧑‍💻 Uso básico
-1. Usar los casos de uso
+## 🧑‍💻 Basic usage
+1. Use the use cases
 ```javascript
 import { Redis } from 'ioredis';
 import { ManagerService } from "fflags-lib";
@@ -35,21 +35,25 @@ let flag = await managerService.createFlag('test', true, 'test flag')
 flag = await managerService.getFlag('test')
 flag = await managerService.deactivateFlag('test')
 flag = await managerService.activateFlag('test')
+flag = await managerService.deleteFlag('test')
+flag = await managerService.getAllFlags()
+flag = await managerService.getActivatedFlags()
+flag = await managerService.getInactiveFlags()
 ```
 ## 🧪 Tests
 ```bash
 npm run test
 ```
 
-## ⚙️ Configuración
+## ⚙️ Configuration
 
 ```text
-Para usar con tus propios paths o herramientas, revisa:
-•	tsconfig.json con baseUrl y paths configurados.
-•	tsup.config.ts para el bundling.
-•	vitest.config.ts para los tests.
+To use with your own paths or tools, check:
+•	tsconfig.json with configured baseUrl and paths.
+•	tsup.config.ts for bundling.
+•	vitest.config.ts for tests.
 ```
-## 📌 Requisitos
+## 📌 Requirements
 - Node.js 18+ 
 - Redis 6+
 - ioredis 5+

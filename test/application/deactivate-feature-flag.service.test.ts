@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach } from 'vitest';
-import { DeactivateFeatureFlagService } from '../../src';
 import { InMemoryFeatureFlagRepository } from '../infrastructure/repositories/inmemory.repository';
-import { FeatureFlag } from '../../src';
+import { DeactivateFeatureFlagService } from '../../src/application/deactivate-feature-flag.service';
+import { FeatureFlag } from '../../src/domain/feature-flag.entity';
 
 describe('DeactivateFeatureFlagService', () => {
     let repository: InMemoryFeatureFlagRepository;
@@ -12,7 +12,7 @@ describe('DeactivateFeatureFlagService', () => {
         service = new DeactivateFeatureFlagService(repository);
     });
 
-    it('debería desactivar un feature flag existente', async () => {
+    it('should deactivate an existing feature flag', async () => {
         const key = 'test-key';
         const featureFlag = new FeatureFlag(key, true);
         await repository.save(featureFlag);
@@ -24,7 +24,7 @@ describe('DeactivateFeatureFlagService', () => {
         expect(updatedFlag?.isActive).toBe(false);
     });
 
-    it('debería lanzar un error si el feature flag no existe', async () => {
+    it('should throw an error if the feature flag does not exist', async () => {
         const key = 'non-existent-key';
 
         await expect(service.execute(key)).rejects.toThrow(
