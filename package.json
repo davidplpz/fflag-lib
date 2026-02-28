@@ -1,6 +1,6 @@
 {
   "name": "fflags-lib",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Librería para gestionar feature flags con Redis usando DDD y arquitectura hexagonal",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
