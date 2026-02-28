@@ -10,7 +10,13 @@ describe('ManagerService', () => {
 
     beforeEach(() => {
         repository = new InMemoryFeatureFlagRepository();
-        const redisClient = {} as Redis;
+        const redisClient = {
+            duplicate: () => ({
+                subscribe: async () => { },
+                on: () => { },
+                disconnect: () => { }
+            })
+        } as unknown as Redis;
         managerService = ManagerService.getInstance(redisClient);
         (managerService as any).createService['repository'] = repository;
         (managerService as any).deleteService['repository'] = repository;

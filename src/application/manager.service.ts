@@ -1,13 +1,13 @@
-import {Redis} from "ioredis";
-import {CreateFeatureFlagService} from "application/create-feature-flag.service";
-import {DeleteFeatureFlagService} from "application/delete-feature-flag.service";
-import {GetFeatureFlagService} from "application/get-feature-flag.service";
-import {DeactivateFeatureFlagService} from "application/deactivate-feature-flag.service";
-import {RedisRepository} from "infrastructure/repositories/redis.repository";
-import {ActivateFeatureFlagService} from "application/activate-feature-flag.service";
-import {GetAllFeatureFlagsService} from "application/get-all-feature-flags.service";
-import {GetAllActiveFeatureFlagsService} from "application/get-all-active-feature-flags.service";
-import {GetAllInactiveFeatureFlags} from "application/get-all-inactive-feature-flags.service";
+import { Redis } from "ioredis";
+import { CreateFeatureFlagService } from "application/create-feature-flag.service";
+import { DeleteFeatureFlagService } from "application/delete-feature-flag.service";
+import { GetFeatureFlagService } from "application/get-feature-flag.service";
+import { DeactivateFeatureFlagService } from "application/deactivate-feature-flag.service";
+import { RedisRepository } from "infrastructure/repositories/redis.repository";
+import { ActivateFeatureFlagService } from "application/activate-feature-flag.service";
+import { GetAllFeatureFlagsService } from "application/get-all-feature-flags.service";
+import { GetAllActiveFeatureFlagsService } from "application/get-all-active-feature-flags.service";
+import { GetAllInactiveFeatureFlags } from "application/get-all-inactive-feature-flags.service";
 
 export class ManagerService {
     private static instance: ManagerService;
@@ -19,22 +19,23 @@ export class ManagerService {
     private readonly getAllService: GetAllFeatureFlagsService;
     private readonly getActivatedService: GetAllActiveFeatureFlagsService;
     private readonly getInactiveService: GetAllInactiveFeatureFlags;
+    private readonly repository: RedisRepository;
 
     private constructor(redisClient: Redis) {
-        const repository = new RedisRepository(redisClient);
-        this.createService = new CreateFeatureFlagService(repository);
-        this.deleteService = new DeleteFeatureFlagService(repository);
-        this.getService = new GetFeatureFlagService(repository);
-        this.deactivateService = new DeactivateFeatureFlagService(repository);
-        this.activateService = new ActivateFeatureFlagService(repository);
-        this.getAllService = new GetAllFeatureFlagsService(repository);
-        this.getActivatedService = new GetAllActiveFeatureFlagsService(repository);
-        this.getInactiveService = new GetAllInactiveFeatureFlags(repository);
+        this.repository = new RedisRepository(redisClient);
+        this.createService = new CreateFeatureFlagService(this.repository);
+        this.deleteService = new DeleteFeatureFlagService(this.repository);
+        this.getService = new GetFeatureFlagService(this.repository);
+        this.deactivateService = new DeactivateFeatureFlagService(this.repository);
+        this.activateService = new ActivateFeatureFlagService(this.repository);
+        this.getAllService = new GetAllFeatureFlagsService(this.repository);
+        this.getActivatedService = new GetAllActiveFeatureFlagsService(this.repository);
+        this.getInactiveService = new GetAllInactiveFeatureFlags(this.repository);
     }
 
     public static getInstance(redisClient: Redis): ManagerService {
         if (!ManagerService.instance) {
-        ManagerService.instance = new ManagerService(redisClient);
+            ManagerService.instance = new ManagerService(redisClient);
         }
         return ManagerService.instance;
     }
@@ -69,5 +70,11 @@ export class ManagerService {
 
     async getInactiveFlags() {
         return this.getInactiveService.execute();
+    }
+
+    async quit() {
+        if (this.repository && typeof this.repository.quit === 'function') {
+            await this.repository.quit();
+        }
     }
 }
