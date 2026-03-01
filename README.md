@@ -25,17 +25,40 @@ npm install fflags-lib
 ## 🧑‍💻 Usage Guide
 
 ### 1. Initialization
-First, connect to your Redis instance and initialize the `ManagerService`.
+With the newly updated architecture, you can now instantiate the `ManagerService` by injecting the `FeatureFlagRepository` of your choice. You can use **Redis**, **PostgreSQL**, or **MySQL**.
 
+First, choose the driver you want to use and instantiate its repository:
+
+#### Option A: Redis (Default / Recommended for speed)
 ```javascript
 import { Redis } from 'ioredis';
-import { ManagerService } from "fflags-lib";
+import { ManagerService, RedisRepository } from "fflags-lib";
 
-// Connect to Redis (defaults to localhost:6379)
-const redis = new Redis();
+const redisClient = new Redis(); // defaults to localhost:6379
+const repository = new RedisRepository(redisClient);
+const managerService = ManagerService.getInstance(repository);
+```
 
-// Initialize the Feature Flags Manager
-const managerService = ManagerService.getInstance(redis);
+#### Option B: PostgreSQL
+Make sure you have created the required `feature_flags` table (check `schema.sql`) and that you have `pg` installed (`npm i pg`).
+```javascript
+import { PostgresRepository, ManagerService } from "fflags-lib";
+
+const repository = new PostgresRepository({
+    connectionString: "postgresql://user:password@localhost:5432/mydb"
+});
+const managerService = ManagerService.getInstance(repository);
+```
+
+#### Option C: MySQL
+Make sure you have created the required `feature_flags` table (check `schema.sql`) and that you have `mysql2` installed (`npm i mysql2`).
+```javascript
+import { MysqlRepository, ManagerService } from "fflags-lib";
+
+const repository = new MysqlRepository({
+    uri: "mysql://user:password@localhost:3306/mydb"
+});
+const managerService = ManagerService.getInstance(repository);
 ```
 
 ### 2. Creating a Feature Flag

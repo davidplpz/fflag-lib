@@ -1,4 +1,4 @@
-import {FeatureFlag} from "./feature-flag.entity";
+import { FeatureFlag } from "./feature-flag.entity";
 
 export interface FeatureFlagRepository {
     get(key: string): Promise<FeatureFlag | null>;
@@ -8,4 +8,5 @@ export interface FeatureFlagRepository {
     getAll(): Promise<FeatureFlag[]>;
     getAllActive(): Promise<FeatureFlag[]>;
     getAllInactive(): Promise<FeatureFlag[]>;
+    quit?(): Promise<void>;
 }

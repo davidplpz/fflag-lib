@@ -1,9 +1,9 @@
-import { Redis } from "ioredis";
+import { FeatureFlagRepository } from "domain/feature-flag-repository.entity";
 import { CreateFeatureFlagService } from "application/create-feature-flag.service";
 import { DeleteFeatureFlagService } from "application/delete-feature-flag.service";
 import { GetFeatureFlagService } from "application/get-feature-flag.service";
 import { DeactivateFeatureFlagService } from "application/deactivate-feature-flag.service";
-import { RedisRepository } from "infrastructure/repositories/redis.repository";
+
 import { ActivateFeatureFlagService } from "application/activate-feature-flag.service";
 import { GetAllFeatureFlagsService } from "application/get-all-feature-flags.service";
 import { GetAllActiveFeatureFlagsService } from "application/get-all-active-feature-flags.service";
@@ -19,10 +19,10 @@ export class ManagerService {
     private readonly getAllService: GetAllFeatureFlagsService;
     private readonly getActivatedService: GetAllActiveFeatureFlagsService;
     private readonly getInactiveService: GetAllInactiveFeatureFlags;
-    private readonly repository: RedisRepository;
+    private readonly repository: FeatureFlagRepository;
 
-    private constructor(redisClient: Redis) {
-        this.repository = new RedisRepository(redisClient);
+    constructor(repository: FeatureFlagRepository) {
+        this.repository = repository;
         this.createService = new CreateFeatureFlagService(this.repository);
         this.deleteService = new DeleteFeatureFlagService(this.repository);
         this.getService = new GetFeatureFlagService(this.repository);
@@ -33,9 +33,9 @@ export class ManagerService {
         this.getInactiveService = new GetAllInactiveFeatureFlags(this.repository);
     }
 
-    public static getInstance(redisClient: Redis): ManagerService {
+    public static getInstance(repository: FeatureFlagRepository): ManagerService {
         if (!ManagerService.instance) {
-            ManagerService.instance = new ManagerService(redisClient);
+            ManagerService.instance = new ManagerService(repository);
         }
         return ManagerService.instance;
     }
