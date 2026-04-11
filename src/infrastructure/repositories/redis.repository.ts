@@ -88,9 +88,10 @@ export class RedisRepository implements FeatureFlagRepository {
         if (results) {
             for (let i = 0; i < matchingKeys.length; i++) {
                 const [err, data] = results[i];
-                if (!err && data && Object.keys(data as any).length > 0) {
+                const hash = data as Record<string, string>;
+                if (!err && hash && Object.keys(hash).length > 0) {
                     const flagKey = matchingKeys[i].replace("feature_flag:", "");
-                    const flag = new FeatureFlag(flagKey, (data as any).isActive === "true", (data as any).description);
+                    const flag = new FeatureFlag(flagKey, hash.isActive === "true", hash.description);
                     featureFlags.push(flag);
                     this.cache.set(flagKey, flag);
                 }

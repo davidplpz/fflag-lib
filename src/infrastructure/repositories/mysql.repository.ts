@@ -1,4 +1,4 @@
-import { createPool, Pool, PoolOptions } from 'mysql2/promise';
+import { createPool, Pool, PoolOptions, RowDataPacket } from 'mysql2/promise';
 import { FeatureFlagRepository } from '../../domain/feature-flag-repository.entity';
 import { FeatureFlag } from '../../domain/feature-flag.entity';
 
@@ -15,7 +15,7 @@ export class MysqlRepository implements FeatureFlagRepository {
             [key]
         );
 
-        const resultRows = rows as any[];
+        const resultRows = rows as RowDataPacket[];
         if (resultRows.length === 0) return null;
 
         const row = resultRows[0];
@@ -41,22 +41,22 @@ export class MysqlRepository implements FeatureFlagRepository {
             'SELECT 1 FROM feature_flags WHERE id = ? LIMIT 1',
             [key]
         );
-        return (rows as any[]).length > 0;
+        return (rows as RowDataPacket[]).length > 0;
     }
 
     async getAll(): Promise<FeatureFlag[]> {
         const [rows] = await this.pool.query('SELECT id, description, is_active FROM feature_flags');
-        return (rows as any[]).map(row => new FeatureFlag(row.id, Boolean(row.is_active), row.description));
+        return (rows as RowDataPacket[]).map(row => new FeatureFlag(row.id, Boolean(row.is_active), row.description));
     }
 
     async getAllActive(): Promise<FeatureFlag[]> {
         const [rows] = await this.pool.query('SELECT id, description, is_active FROM feature_flags WHERE is_active = TRUE');
-        return (rows as any[]).map(row => new FeatureFlag(row.id, Boolean(row.is_active), row.description));
+        return (rows as RowDataPacket[]).map(row => new FeatureFlag(row.id, Boolean(row.is_active), row.description));
     }
 
     async getAllInactive(): Promise<FeatureFlag[]> {
         const [rows] = await this.pool.query('SELECT id, description, is_active FROM feature_flags WHERE is_active = FALSE');
-        return (rows as any[]).map(row => new FeatureFlag(row.id, Boolean(row.is_active), row.description));
+        return (rows as RowDataPacket[]).map(row => new FeatureFlag(row.id, Boolean(row.is_active), row.description));
     }
 
     async quit(): Promise<void> {

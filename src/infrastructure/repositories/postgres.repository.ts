@@ -1,4 +1,10 @@
 import { Pool, PoolConfig } from 'pg';
+
+interface FlagRow {
+    id: string;
+    description: string;
+    is_active: boolean;
+}
 import { FeatureFlagRepository } from '../../domain/feature-flag-repository.entity';
 import { FeatureFlag } from '../../domain/feature-flag.entity';
 
@@ -45,17 +51,17 @@ export class PostgresRepository implements FeatureFlagRepository {
 
     async getAll(): Promise<FeatureFlag[]> {
         const result = await this.pool.query('SELECT id, description, is_active FROM feature_flags');
-        return result.rows.map((row: any) => new FeatureFlag(row.id, row.is_active, row.description));
+        return result.rows.map((row: FlagRow) => new FeatureFlag(row.id, row.is_active, row.description));
     }
 
     async getAllActive(): Promise<FeatureFlag[]> {
         const result = await this.pool.query('SELECT id, description, is_active FROM feature_flags WHERE is_active = true');
-        return result.rows.map((row: any) => new FeatureFlag(row.id, row.is_active, row.description));
+        return result.rows.map((row: FlagRow) => new FeatureFlag(row.id, row.is_active, row.description));
     }
 
     async getAllInactive(): Promise<FeatureFlag[]> {
         const result = await this.pool.query('SELECT id, description, is_active FROM feature_flags WHERE is_active = false');
-        return result.rows.map((row: any) => new FeatureFlag(row.id, row.is_active, row.description));
+        return result.rows.map((row: FlagRow) => new FeatureFlag(row.id, row.is_active, row.description));
     }
 
     async quit(): Promise<void> {
